@@ -1,0 +1,19 @@
+name: FlexiMaca
+main: FlexiMaca.Main
+version: 1.0.0
+author: LcG
+api-version: 1.13
+description: Plugin de Maça especial
+
+sofdepend: [FlexiLoad]
+
+commands:
+  fleximaca:
+    description: Comando para dar a maca especial
+    usage: /fleximaca give <player> [quantia]
+    permission: fleximaca.admin
+
+permissions:
+  fleximaca.admin:
+    description: Permite usar o comando /fleximaca
+    default: op

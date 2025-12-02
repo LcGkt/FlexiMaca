@@ -1,0 +1,56 @@
+item:
+  nome: "&6&lMaçã &e&lFlexi"
+  lore:
+    - "&7Uma maçã lendária criada pelo sistema Flexi!"
+    - "&eConcede buffs insanos por tempo limitado."
+
+buffs:
+  SPEED:
+    ativo: true
+    duracao: 20
+    nivel: 2
+
+  INCREASE_DAMAGE: # Força
+    ativo: true
+    duracao: 20
+    nivel: 2
+
+  REGENERATION:
+    ativo: true
+    duracao: 15
+    nivel: 3
+
+  ABSORPTION:
+    ativo: true
+    duracao: 30
+    nivel: 1
+
+  JUMP:   # Super Pulo
+    ativo: true
+    duracao: 25
+    nivel: 3
+
+  FAST_DIGGING:  # Haste
+    ativo: true
+    duracao: 25
+    nivel: 2
+
+  DAMAGE_RESISTANCE:  # Resistência
+    ativo: true
+    duracao: 20
+    nivel: 1
+
+  FIRE_RESISTANCE:
+    ativo: false
+    duracao: 30
+    nivel: 1
+
+  NIGHT_VISION:
+    ativo: false
+    duracao: 60
+    nivel: 1
+
+  WATER_BREATHING:
+    ativo: false
+    duracao: 40
+    nivel: 1
