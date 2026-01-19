@@ -1,5 +1,7 @@
 package FlexiMaca;
 
+import org.bukkit.Bukkit;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
@@ -10,17 +12,30 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         instance = this;
         saveDefaultConfig();
-        
-        getCommand("fleximaca").setExecutor(new Commands());
-        getLogger().info("§a[FlexiMaca]§7 ativado!");
-        
-        getServer().getPluginManager().registerEvents(new ListenerMaca(), this);
-        
-    }
 
-    @Override
-    public void onDisable() {
-        getLogger().info("§c[FlexiMaca] desativado!");
+        getCommand("fleximaca").setExecutor(new Commands());
+        getServer().getPluginManager().registerEvents(new ListenerMaca(), this);
+
+        // msg no console
+        sendConsole("&a[FlexiMaca] habilitado! Servidor rodando: " + Bukkit.getBukkitVersion().split("-")[0]);
+		
+    }
+        @Override
+        public void onDisable() {
+        	sendConsole("&c[FlexiMaca] desabilitado!");
+        }
+        	
+
+    /** Enviar mensagem colorida ao console */
+    public static void sendConsole(String msg) {
+        ConsoleCommandSender console = Bukkit.getConsoleSender();
+        console.sendMessage(color(msg));
+		
+	}
+
+	/** COLOR SYSTEM */
+    public static String color(String msg) {
+        return msg.replace("&", "§");
     }
 
     public static Main getInstance() {

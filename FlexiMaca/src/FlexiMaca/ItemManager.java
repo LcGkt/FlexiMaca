@@ -17,7 +17,7 @@ public class ItemManager {
 
         FileConfiguration config = Main.getInstance().getConfig();
 
-        ItemStack item = new ItemStack(Material.GOLDEN_APPLE, 1, (short) 1); // Maçã dourada encantada
+        ItemStack item = new ItemStack(Material.GOLDEN_APPLE, 1, (short) 1);
         ItemMeta meta = item.getItemMeta();
 
         meta.setDisplayName(config.getString("item.nome").replace("&", "§"));
@@ -33,22 +33,20 @@ public class ItemManager {
         return item;
     }
 
-    // Buffs serão aplicados ao comer a maçã
     public static void aplicarBuffs(Player p) {
+
         FileConfiguration config = Main.getInstance().getConfig();
 
-        for (String s : config.getConfigurationSection("buffs").getKeys(false)) {
+        for (String key : config.getConfigurationSection("buffs").getKeys(false)) {
 
-            String path = "buffs." + s + ".ativo";
+            if (!config.getBoolean("buffs." + key + ".ativo"))
+                continue;
 
-            // Se não estiver ativo → ignora
-            if (!config.getBoolean(path)) continue;
-
-            PotionEffectType type = PotionEffectType.getByName(s.toUpperCase());
+            PotionEffectType type = PotionEffectType.getByName(key.toUpperCase());
             if (type == null) continue;
 
-            int dur = config.getInt("buffs." + s + ".duracao");
-            int lvl = config.getInt("buffs." + s + ".nivel");
+            int dur = config.getInt("buffs." + key + ".duracao");
+            int lvl = config.getInt("buffs." + key + ".nivel");
 
             p.addPotionEffect(new PotionEffect(type, dur * 20, lvl - 1));
         }

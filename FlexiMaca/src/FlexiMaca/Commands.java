@@ -12,7 +12,6 @@ public class Commands implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
-        // Permissão
         if (!sender.hasPermission("fleximaca.admin")) {
             sender.sendMessage("§cVocê não tem permissão para usar este comando.");
             return true;
@@ -30,39 +29,51 @@ public class Commands implements CommandExecutor {
                 return true;
             }
 
-            Player target = Bukkit.getPlayer(args[1]);
-            if (target == null) {
-                sender.sendMessage("§cJogador offline.");
-                return true;
-            }
+            String playerName = args[1];
+            String quantidadeArg = (args.length >= 3 ? args[2] : "1");
 
-            int quantidade = 1;
-            if (args.length >= 3) {
+            // Roda o processamento em ASYNC
+            Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
+
+                int quantidade;
+
                 try {
-                    quantidade = Integer.parseInt(args[2]);
-                    if (quantidade <= 0) {
-                        sender.sendMessage("§cA quantidade deve ser um número positivo.");
-                        return true;
-                    }
+                    quantidade = Integer.parseInt(quantidadeArg);
+                    if (quantidade <= 0) quantidade = 1;
                 } catch (NumberFormatException ex) {
-                    sender.sendMessage("§cQuantidade inválida. Use um número.");
-                    return true;
+                    sender.sendMessage("§cQuantidade inválida.");
+                    return;
                 }
-            }
 
-            // Clona o item e ajusta a quantidade respeitando o max stack do item
-            ItemStack item = ItemManager.getFlexiMaca().clone();
-            int maxStack = item.getMaxStackSize();
-            if (quantidade > maxStack) {
-                quantidade = maxStack;
-                sender.sendMessage("§eQuantidade maior que o máximo do item. Enviando o máximo: §6" + maxStack);
-            }
+                int finalQuantidade = quantidade;
 
-            item.setAmount(quantidade);
-            target.getInventory().addItem(item);
+                // Voltamos ao main thread para dar o item
+                Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
 
-            target.sendMessage("§aVocê recebeu §6" + quantidade + "x §6Maçã Flexi§a!");
-            sender.sendMessage("§eMaçã Flexi enviada para §f" + target.getName() + " §e(x" + quantidade + ")");
+                    Player target = Bukkit.getPlayer(playerName);
+                    if (target == null) {
+                        sender.sendMessage("§cJogador offline.");
+                        return;
+                    }
+
+                    ItemStack item = ItemManager.getFlexiMaca().clone();
+                    int maxStack = item.getMaxStackSize();
+
+                    int entregar = Math.min(finalQuantidade, maxStack);
+                    item.setAmount(entregar);
+
+                    if (finalQuantidade > maxStack) {
+                        sender.sendMessage("§eQuantidade maior que o máximo ("
+                                + maxStack + "). Enviando apenas o máximo.");
+                    }
+
+                    target.getInventory().addItem(item);
+
+                    target.sendMessage("§aVocê recebeu §6" + entregar + "x Maçã Flexi§a!");
+                    sender.sendMessage("§eEnviado para §f" + target.getName() + " §e(x" + entregar + ")");
+                });
+
+            });
 
             return true;
         }
